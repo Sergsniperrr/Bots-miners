@@ -12,7 +12,7 @@ public class Loader : MonoBehaviour
         ore.transform.localPosition = inventoryPosition;
     }
 
-    public void Upload(Ore ore, IContainer mainBase)
+    public void Unload(Ore ore, IContainer mainBase)
     {
         if (ore == null)
             throw new ArgumentNullException(nameof(ore));

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerInput
+public class KeysInput
 {
     private const string ForwardBackward = nameof(ForwardBackward);
     private const string UpDown = nameof(UpDown);

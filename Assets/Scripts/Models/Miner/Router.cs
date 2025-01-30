@@ -10,6 +10,7 @@ public class Router : MonoBehaviour
 
     public event Action ArrivedToOre;
     public event Action ArrivedToUploadPoint;
+    public event Action ArrivedToFlag;
 
     public void SetBasePosition(Vector3 position) => _basePosition = position;
 
@@ -52,13 +53,24 @@ public class Router : MonoBehaviour
         _mover.StartMoveTo(_waitingPoint);
     }
 
-    private void FinishMoveToOre()
+    public void GoToFlag(Vector3 flagPosition)
     {
-        ArrivedToOre?.Invoke();
+        float indentForUpload = 2.2f;
+        var direction = (flagPosition - transform.position).normalized;
+        var point = flagPosition - direction * indentForUpload;
+
+        _mover.StartMoveTo(point);
+
+        _mover.ArrivedAtPoint += FinishMoveToFlag;
     }
 
-    private void FinishMoveToUploadPoint()
+    private void FinishMoveToFlag()
     {
-        ArrivedToUploadPoint?.Invoke();
+        _mover.ArrivedAtPoint -= FinishMoveToFlag;
+
+        ArrivedToFlag?.Invoke();
     }
+
+    private void FinishMoveToOre() => ArrivedToOre?.Invoke();
+    private void FinishMoveToUploadPoint() => ArrivedToUploadPoint?.Invoke();
 }

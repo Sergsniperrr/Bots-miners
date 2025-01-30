@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseInputHandler : MonoBehaviour
+public class MouseInput : MonoBehaviour
 {
     [SerializeField] private Collider _platform;
     [SerializeField] private Camera _mainCamera;
@@ -11,7 +9,6 @@ public class MouseInputHandler : MonoBehaviour
     private const int RightMouseButton = 1;
 
     private readonly float _positionOnY = 0.13f;
-
 
     private Ray _ray;
     private RaycastHit _hitInfo;

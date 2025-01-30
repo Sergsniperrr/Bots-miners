@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -36,6 +37,12 @@ public static class MinerSearcher
 
     private static float CalculateSquareOfDistance(Miner miner, Ore ore)
     {
+        if (miner == null)
+            throw new ArgumentNullException(nameof(miner));
+
+        if (ore == null)
+            throw new ArgumentNullException(nameof(ore));
+
         return Vector3.SqrMagnitude(miner.transform.position - ore.transform.position);
     }
 }

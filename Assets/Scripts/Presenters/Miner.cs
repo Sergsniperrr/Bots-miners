@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Loader))]
 [RequireComponent(typeof(Router))]
+[RequireComponent(typeof(Builder))]
 public class Miner : MonoBehaviour
 {
     private Loader _loader;
@@ -11,16 +12,18 @@ public class Miner : MonoBehaviour
     private IContainer _mainBase;
     private Ore _target;
     private Ore _oreInInventory;
+    private Builder _builder;
 
     public bool IsFree { get; private set; } = true;
-
-    public void SetWaitingPoint(Vector3 point) => _router.SetWaitingPoint(point, IsFree);
 
     private void Awake()
     {
         _loader = GetComponent<Loader>();
         _router = GetComponent<Router>();
+        _builder = GetComponent<Builder>();
     }
+
+    public void SetWaitingPoint(Vector3 point) => _router.SetWaitingPoint(point, IsFree);
 
     public void SetMainBase(IContainer mainBase)
     {
@@ -38,6 +41,13 @@ public class Miner : MonoBehaviour
         _router.GoToOre(ore.transform.position);
 
         _router.ArrivedToOre += PickUp;
+    }
+
+    public void BuildNewBase(IBaseSpawner spawner, Vector3 flagPosition)
+    {
+        _builder.BuildNewBase(spawner, flagPosition);
+
+        _builder.BaseWasBuilt += SwichToNewBase;
     }
 
     private void SetTarget(Ore ore)
@@ -67,12 +77,19 @@ public class Miner : MonoBehaviour
     {
         _router.ArrivedToUploadPoint -= UploadOre;
 
-        _loader.Upload(_oreInInventory, _mainBase);
+        _loader.Unload(_oreInInventory, _mainBase);
 
         _oreInInventory = null;
         _target = null;
         IsFree = true;
 
         _router.GoToWaitingPoint();
+    }
+
+    private void SwichToNewBase(Base newBase)
+    {
+        _builder.BaseWasBuilt -= SwichToNewBase;
+
+        newBase.AddMiner(this);
     }
 }

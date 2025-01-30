@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 7359539843802930626}
   - component: {fileID: 6097722096506470996}
   - component: {fileID: 8733786060587498959}
-  - component: {fileID: 3066028272603028575}
+  - component: {fileID: 4526174403660788915}
+  - component: {fileID: 8074060074520496404}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -124,7 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ac919a1154f47a4bad631d2dd16b818, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialMinersCount: 3
 --- !u!114 &8733786060587498959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,8 +137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ee5f197d7772a449a60372459eee1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 15
---- !u!114 &3066028272603028575
+  _radius: 25
+--- !u!114 &4526174403660788915
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,15 +151,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _oresForMiner:
+  - "\u0416\u0435\u043B\u0435\u0437\u043E"
+  - "\u0416\u0435\u043B\u0435\u0437\u043E"
   - "\u0417\u043E\u043B\u043E\u0442\u043E"
-  - "\u0416\u0435\u043B\u0435\u0437\u043E"
-  - "\u0416\u0435\u043B\u0435\u0437\u043E"
   _oresForBase:
   - "\u0410\u043B\u043C\u0430\u0437\u044B"
   - "\u0410\u043B\u043C\u0430\u0437\u044B"
   - "\u0410\u043B\u043C\u0430\u0437\u044B"
   - "\u0410\u043B\u043C\u0430\u0437\u044B"
   - "\u0417\u043E\u043B\u043E\u0442\u043E"
+--- !u!114 &8074060074520496404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889556861686361601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a703d1c41f5b7d4f9358d3b0c0dfd1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1767650097359179053
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,6 +414,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7908498191543578182}
   - component: {fileID: 3644225341744357972}
+  - component: {fileID: 1615065926357416917}
   m_Layer: 0
   m_Name: Miners
   m_TagString: Untagged
@@ -436,7 +449,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a800b8733bf91b54abb5365a9498de0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _areaRadius: 4
+  _radiusOfWaitingArea: 4
+--- !u!114 &1615065926357416917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7084934326885417348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d4d52dc931e2354592dbf943c92d0c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8576921409805369022
 GameObject:
   m_ObjectHideFlags: 0

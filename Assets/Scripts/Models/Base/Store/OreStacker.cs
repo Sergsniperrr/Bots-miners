@@ -10,8 +10,7 @@ public class OreStacker : MonoBehaviour, IOreCounter
     private readonly float _oreVerticalSize = 1.666667f;
     private readonly int _maxCountByX = 4;
     private readonly int _maxCountByZ = 4;
-
-    private List<Ore> _ores = new();
+    private readonly List<Ore> _ores = new();
 
     public event Action<Dictionary<string, int>> OresCountChanged;
 
@@ -65,7 +64,6 @@ public class OreStacker : MonoBehaviour, IOreCounter
         for (int i = 0; i < removableOre.Value; i++)
         {
             _ores.Remove(oresOfRequiredType[i]);
-
             Destroy(oresOfRequiredType[i].gameObject);
         }
 

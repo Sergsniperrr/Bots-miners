@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class OreDetector : MonoBehaviour
@@ -7,6 +9,7 @@ public class OreDetector : MonoBehaviour
 
     private float _searchDelay = 0.5f;
     private float _waitSearchCounter;
+    private List<Ore> _ores = new();
 
     public event Action<Ore> OreDetected;
 
@@ -28,16 +31,25 @@ public class OreDetector : MonoBehaviour
 
         Collider[] hitColliders = Physics.OverlapBox(transform.position + shift, scanSize, Quaternion.identity);
 
-        foreach (Collider collider in hitColliders)
-        {
-            if (collider.gameObject.TryGetComponent(out Ore ore))
-            {
-                if (ore.IsEnable)
-                {
-                    OreDetected?.Invoke(ore);
-                    return;
-                }
-            }
-        }
+        SearchNearestOre(GetEnabledOres(hitColliders));
+    }
+
+    private Ore[] GetEnabledOres(Collider[] colliders)
+    {
+        _ores.Clear();
+
+        foreach (Collider collider in colliders)
+            if (collider.gameObject.TryGetComponent(out Ore ore) && ore.IsEnable)
+                _ores.Add(ore);
+
+        return _ores.ToArray();
+    }
+
+    private void SearchNearestOre(Ore[] ores)
+    {
+        Ore ore = ores.OrderBy(ore => Vector3.SqrMagnitude(transform.position - ore.transform.position)).FirstOrDefault();
+
+        if (ore != null)
+            OreDetected?.Invoke(ore);
     }
 }

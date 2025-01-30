@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Pricelist : MonoBehaviour
@@ -8,26 +8,19 @@ public class Pricelist : MonoBehaviour
     [SerializeField] private string[] _oresForBase;
 
     public Dictionary<string, int> MinerPrice { get; private set; }
-    public Dictionary<string, int> BasePrice { get; private set; }
+    public Dictionary<string, int> BuilderPrice { get; private set; }
 
     private void Awake()
     {
+        if (_oresForMiner.Length == 0)
+            throw new NullReferenceException(nameof(_oresForMiner));
+
+        if (_oresForBase.Length == 0)
+            throw new NullReferenceException(nameof(_oresForBase));
+
         MinerPrice = CreatePrice(_oresForMiner);
-        BasePrice = CreatePrice(_oresForBase);
+        BuilderPrice = CreatePrice(_oresForBase);
     }
-
-    //public bool BuyMiner(Store store) => Buy(store, _minerPrice);
-    //public bool BuyColonist(Store store) => Buy(store, _basePrice);
-
-    //public bool Buy(Store store, Dictionary<string, int> price)
-    //{
-    //    bool result = store.CheckOresForEnough(price);
-
-    //    if (result)
-    //        store.RemoveOres(price);
-
-    //    return result;
-    //}
 
     private Dictionary<string, int> CreatePrice(string[] ores)
     {

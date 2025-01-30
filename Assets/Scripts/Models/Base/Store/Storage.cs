@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(OreStacker))]
-public class Store : MonoBehaviour
+public class Storage : MonoBehaviour, IOreRemover
 {
     private OreStacker _stacker;
 
@@ -19,16 +18,14 @@ public class Store : MonoBehaviour
         _stacker.Add(ore);
     }
 
-    public bool TryPay(Dictionary<string, int> requireOres)
+    public bool TryRemoveOres(Dictionary<string, int> removableOres)
     {
-        if (_stacker.CheckOresForEnough(requireOres) == false)
+        if (_stacker.CheckOresForEnough(removableOres) == false)
             return false;
 
-        foreach (KeyValuePair<string, int> ore in requireOres)
+        foreach (KeyValuePair<string, int> ore in removableOres)
             _stacker.Remove(ore);
 
         return true;
     }
-
-
 }
