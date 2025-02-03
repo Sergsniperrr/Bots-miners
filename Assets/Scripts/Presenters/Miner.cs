@@ -23,7 +23,8 @@ public class Miner : MonoBehaviour
         _builder = GetComponent<Builder>();
     }
 
-    public void SetWaitingPoint(Vector3 point) => _router.SetWaitingPoint(point, IsFree);
+    public void SetWaitingPoint(Vector3 point) =>
+        _router.SetWaitingPoint(point, IsFree);
 
     public void SetMainBase(IContainer mainBase)
     {

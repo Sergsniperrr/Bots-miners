@@ -28,4 +28,7 @@ public class Storage : MonoBehaviour, IOreRemover
 
         return true;
     }
+
+    public bool CheckOresForEnough(Dictionary<string, int> requireOres) =>
+        _stacker.CheckOresForEnough(requireOres);
 }

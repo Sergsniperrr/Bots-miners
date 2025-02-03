@@ -10,11 +10,15 @@ public class OreDetector : MonoBehaviour
     private float _searchDelay = 0.5f;
     private float _waitSearchCounter;
     private List<Ore> _ores = new();
+    private bool _canScan  = true;
 
     public event Action<Ore> OreDetected;
 
     private void Update()
     {
+        if (_canScan == false)
+            return;
+
         _waitSearchCounter += Time.deltaTime;
 
         if (_waitSearchCounter >= _searchDelay)
@@ -23,6 +27,12 @@ public class OreDetector : MonoBehaviour
             _waitSearchCounter = 0f;
         }
     }
+
+    public void EnableScanning() =>
+        _canScan = true;
+
+    public void DisableScanning() =>
+        _canScan = false;
 
     private void Scan()
     {

@@ -38,6 +38,21 @@ public class OreStacker : MonoBehaviour, IOreCounter
         OresCountChanged?.Invoke(GetCurrentOresCount());
     }
 
+    public void Remove(KeyValuePair<string, int> removableOre)
+    {
+        var oresOfRequiredType = _ores.Where(ore => ore.Name == removableOre.Key).ToArray();
+
+        for (int i = 0; i < removableOre.Value; i++)
+        {
+            _ores.Remove(oresOfRequiredType[i]);
+            Destroy(oresOfRequiredType[i].gameObject);
+        }
+
+        OresCountChanged?.Invoke(GetCurrentOresCount());
+
+        UpdatePositions();
+    }
+
     public bool CheckOresForEnough(Dictionary<string, int> requireOres)
     {
         Dictionary<string, int> ores = GetCurrentOresCount();
@@ -55,21 +70,6 @@ public class OreStacker : MonoBehaviour, IOreCounter
         }
 
         return true;
-    }
-
-    public void Remove(KeyValuePair<string, int> removableOre)
-    {
-        var oresOfRequiredType = _ores.Where(ore => ore.Name == removableOre.Key).ToArray();
-
-        for (int i = 0; i < removableOre.Value; i++)
-        {
-            _ores.Remove(oresOfRequiredType[i]);
-            Destroy(oresOfRequiredType[i].gameObject);
-        }
-
-        OresCountChanged?.Invoke(GetCurrentOresCount());
-
-        UpdatePositions();
     }
 
     private void UpdatePositions()

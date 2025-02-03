@@ -12,7 +12,8 @@ public class Router : MonoBehaviour
     public event Action ArrivedToUploadPoint;
     public event Action ArrivedToFlag;
 
-    public void SetBasePosition(Vector3 position) => _basePosition = position;
+    public void SetBasePosition(Vector3 position) =>
+        _basePosition = position;
 
     private void Awake()
     {

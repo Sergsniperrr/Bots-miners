@@ -6,5 +6,6 @@ public class Ore : MonoBehaviour
 
     public bool IsEnable { get; private set; } = true;
 
-    public void Disable() => IsEnable = false;
+    public void Disable() =>
+        IsEnable = false;
 }

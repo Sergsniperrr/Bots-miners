@@ -31,5 +31,4 @@ public class TextRotator : MonoBehaviour
 
         _base.CameraInitialized -= InitializeCamera;
     }
-
 }

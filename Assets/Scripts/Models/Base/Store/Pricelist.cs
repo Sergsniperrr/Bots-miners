@@ -8,7 +8,7 @@ public class Pricelist : MonoBehaviour
     [SerializeField] private string[] _oresForBase;
 
     public Dictionary<string, int> MinerPrice { get; private set; }
-    public Dictionary<string, int> BuilderPrice { get; private set; }
+    public Dictionary<string, int> BasePrice { get; private set; }
 
     private void Awake()
     {
@@ -19,7 +19,7 @@ public class Pricelist : MonoBehaviour
             throw new NullReferenceException(nameof(_oresForBase));
 
         MinerPrice = CreatePrice(_oresForMiner);
-        BuilderPrice = CreatePrice(_oresForBase);
+        BasePrice = CreatePrice(_oresForBase);
     }
 
     private Dictionary<string, int> CreatePrice(string[] ores)

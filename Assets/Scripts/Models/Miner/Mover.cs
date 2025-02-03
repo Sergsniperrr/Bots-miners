@@ -18,10 +18,8 @@ public class Mover : MonoBehaviour
             Move();
     }
 
-    public void StartMoveTo(Vector3 target)
-    {
+    public void StartMoveTo(Vector3 target) =>
         _target = target;
-    }
 
     private void Move()
     {

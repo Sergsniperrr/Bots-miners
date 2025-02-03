@@ -19,6 +19,8 @@ public class Builder : MonoBehaviour
 
         if (_demoBase == null)
             throw new NullReferenceException(nameof(_demoBase));
+
+        _demoBase.gameObject.SetActive(false);
     }
 
     public void BuildNewBase(IBaseSpawner baseSpawner, Vector3 flagPosition)
@@ -26,7 +28,7 @@ public class Builder : MonoBehaviour
         float offset = 0.15f;
         _flagPosition = flagPosition;
         _flagPosition.y = offset;
-        _demoBase.Show();
+        _demoBase.gameObject.SetActive(true);
 
         _baseSpawner = baseSpawner ?? throw new ArgumentNullException(nameof(baseSpawner));
         _router.GoToFlag(_flagPosition);
@@ -37,6 +39,7 @@ public class Builder : MonoBehaviour
     private void CreateBase()
     {
         _router.ArrivedToFlag -= CreateBase;
+
         StartCoroutine(DropDemoBase());
     }
 
@@ -44,8 +47,9 @@ public class Builder : MonoBehaviour
     {
         float speed = 10f;
         float offset = 5f;
-        float offsetSpeed = 12f;
-        Vector3 maxScale = new(2f, 0.3f, 2f);
+        float maxScaleOnXZ = 2f;
+        float maxScaleY = 0.3f;
+        Vector3 maxScale = new(maxScaleOnXZ, maxScaleY, maxScaleOnXZ);
         Vector3 currentPosition = _demoBase.transform.position;
         Vector3 currentScale = _demoBase.transform.localScale;
 
@@ -55,7 +59,7 @@ public class Builder : MonoBehaviour
             currentScale = Vector3.MoveTowards(currentScale, maxScale, speed * Time.deltaTime);
 
             currentPosition.y += offset * Time.deltaTime;
-            offset = Mathf.MoveTowards(offset, 0f, offsetSpeed * Time.deltaTime);
+            offset = Mathf.MoveTowards(offset, 0f, speed * Time.deltaTime);
 
             _demoBase.transform.position = currentPosition;
             _demoBase.transform.localScale = currentScale;
@@ -64,7 +68,9 @@ public class Builder : MonoBehaviour
         }
 
         SpawnBase();
-        _demoBase.Hide();
+        
+        _demoBase.ResetTransform();
+        _demoBase.gameObject.SetActive(false);
     }
 
     private void SpawnBase()

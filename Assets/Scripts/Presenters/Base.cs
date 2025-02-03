@@ -3,23 +3,25 @@ using UnityEngine;
 
 [RequireComponent(typeof(OreDetector))]
 [RequireComponent(typeof(Pricelist))]
-public class Base : MonoBehaviour, IContainer, IObservable
+public class Base : MonoBehaviour, IContainer, IObservable, IBaseBuilder
 {
+    private readonly int _minMinersCount = 2;
+
     private MinersHandler _minersHandler;
     private Storage _storage;
-    private OreDetector _detector;
     private Buyer _buyer;
     private SelectionAura _aura;
-    private bool _isBuilderCreating = false;
+    private OreDetector _OreDetector;
 
     public event Action<Transform> CameraInitialized;
 
-    public Vector3 Position => transform.position;
+    public bool IsNewBaseBuilding { get; private set; } = false;
     public Vector3 FlagPosition { get; private set; }
+    public Vector3 Position => transform.position;
 
     private void Awake()
     {
-        _detector = GetComponent<OreDetector>();
+        _OreDetector = GetComponent<OreDetector>();
         _buyer = GetComponent<Buyer>();
         FlagPosition = transform.position;
 
@@ -35,67 +37,111 @@ public class Base : MonoBehaviour, IContainer, IObservable
 
         if (_aura == null)
             throw new NullReferenceException(nameof(_aura));
+
+        HideAura();
+        _buyer.InitializeData(_storage);
     }
 
     private void OnEnable()
     {
-        _detector.OreDetected += _minersHandler.CollectOre;
+        _OreDetector.OreDetected += _minersHandler.GiveTaskToMiner;
+        _minersHandler.FreeMinersOver += _OreDetector.DisableScanning;
     }
 
     private void OnDisable()
     {
-        _detector.OreDetected -= _minersHandler.CollectOre;
+        _OreDetector.OreDetected -= _minersHandler.GiveTaskToMiner;
+        _minersHandler.FreeMinersOver -= _OreDetector.DisableScanning;
     }
 
-    public void ShowAura() => _aura.Show();
-    public void HideAura() => _aura.Hide();
+    public void ShowAura() =>
+        _aura.gameObject.SetActive(true);
+
+    public void HideAura() =>
+        _aura.gameObject.SetActive(false);
 
     public void SetFlagPosition(Vector3 position)
     {
-        FlagPosition = position;
-        _isBuilderCreating = true;
+        int minMinersCount = 2;
 
-        TryCreateBuilder();
+        if (_minersHandler.MinersCount < minMinersCount)
+            return;
+
+        FlagPosition = position;
+        IsNewBaseBuilding = true;
+
+        TrySendBuilder();
     }
 
     public void ResetFlagPosition()
     {
+        _minersHandler.BuilderBeenSent -= BuyBase;
+
+        _minersHandler.CancelSendingBuilder();
         FlagPosition = transform.position;
-        _isBuilderCreating = false;
+        IsNewBaseBuilding = false;
     }
 
     public void AddToStore(Ore ore)
     {
         _storage.Add(ore);
+        _OreDetector.EnableScanning();
 
-        TryCreateMiner();
-        TryCreateBuilder();
+        TrySendBuilder();
+        TrySpawnMiner();
     }
 
     public void InitializeData(Miner minerPrefab, Transform camera,
                                IBaseSpawner baseSpawner, int initialMinersCount = 0)
     {
-        _minersHandler.InitializeData(minerPrefab, this, baseSpawner);
+        _minersHandler.InitializeData(minerPrefab, this, baseSpawner, this);
         CameraInitialized.Invoke(camera);
 
         for (int i = 0; i < initialMinersCount; i++)
-            _minersHandler.CreateMiner();
+            _minersHandler.SpawnMiner();
     }
 
-    public void AddMiner(Miner miner) => _minersHandler.AddMiner(miner);
-
-    private void TryCreateMiner()
+    public void AddMiner(Miner miner)
     {
-        if (_isBuilderCreating == false && _buyer.TryBuyMiner(_storage))
-            _minersHandler.CreateMiner();
+        _minersHandler.AddMiner(miner);
+        _OreDetector.EnableScanning();
     }
 
-    private void TryCreateBuilder()
+    private void BuyBase()
     {
-        if (_isBuilderCreating && _buyer.TryBuyBuilder(_storage))
+        _minersHandler.BuilderBeenSent -= BuyBase;
+
+        _buyer.TryBuyBase();
+        IsNewBaseBuilding = false;
+    }
+
+    private void TrySpawnMiner()
+    {
+        if (IsNewBaseBuilding && _minersHandler.MinersCount >= _minMinersCount)
+            return;
+
+        if (_buyer.TryBuyMiner())
+            _minersHandler.SpawnMiner();
+    }
+
+    private void TrySendBuilder()
+    {
+        if (IsNewBaseBuilding == false || _minersHandler.MinersCount < _minMinersCount)
+            return;
+
+        if (_buyer.CheckEnoughOresForBase() == false)
+            return;
+
+        _minersHandler.StartSendingBuilder();
+
+        if (_minersHandler.CheckForNoFreeMiners())
         {
-            _minersHandler.CreateBuilder(FlagPosition);
-            _isBuilderCreating = false;
+            _minersHandler.BuilderBeenSent += BuyBase;
+        }
+        else
+        {
+            BuyBase();
+            _minersHandler.SendBuilder();
         }
     }
 }

@@ -2,28 +2,26 @@ using UnityEngine;
 
 public class SelectedBaseView : MonoBehaviour
 {
-    [SerializeField] private Flag _flagPrefab;
+    [SerializeField] private Flag _flag;
     [SerializeField] private Transform _camera;
-
-    private Flag _flag;
 
     private void Start()
     {
-        _flag = Instantiate(_flagPrefab, transform.position, transform.rotation);
-        _flag.Hide();
+        _flag.gameObject.SetActive(false);
         _flag.InitializeCamera(_camera);
     }
 
     public void ShowSelectedBase(Base selectedBase)
     {
         selectedBase.ShowAura();
-        _flag.Show();
+
+        _flag.gameObject.SetActive(true);
         _flag.transform.position = selectedBase.FlagPosition;
     }
 
     public void UnselectBase(Base targetBase)
     {
         targetBase.HideAura();
-        _flag.Hide();
+        _flag.gameObject.SetActive(false);
     }
 }

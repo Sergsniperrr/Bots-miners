@@ -5,14 +5,14 @@ using UnityEngine;
 
 public static class MinerSearcher
 {
-    public static Miner FindNearestFreeMiner(Miner[] miners, Ore ore)
+    public static Miner FindNearestFreeMiner(Miner[] miners, Vector3 targetPoint)
     {
         var freeMiners = miners.Where(miner => miner.IsFree);
 
-        return GetNearestMiner(ore, freeMiners);
+        return GetNearestMiner(targetPoint, freeMiners);
     }
 
-    private static Miner GetNearestMiner(Ore ore, IEnumerable<Miner> freeMiners)
+    private static Miner GetNearestMiner(Vector3 targetPoint, IEnumerable<Miner> freeMiners)
     {
         if (freeMiners.Count() == 0)
             return null;
@@ -23,7 +23,7 @@ public static class MinerSearcher
 
         foreach (Miner miner in freeMiners)
         {
-            sqrDistance = CalculateSquareOfDistance(miner, ore);
+            sqrDistance = CalculateSquareOfDistance(miner, targetPoint);
 
             if (minSqrDistance > sqrDistance)
             {
@@ -35,14 +35,11 @@ public static class MinerSearcher
         return nearestMiner;
     }
 
-    private static float CalculateSquareOfDistance(Miner miner, Ore ore)
+    private static float CalculateSquareOfDistance(Miner miner, Vector3 targetPoint)
     {
         if (miner == null)
             throw new ArgumentNullException(nameof(miner));
 
-        if (ore == null)
-            throw new ArgumentNullException(nameof(ore));
-
-        return Vector3.SqrMagnitude(miner.transform.position - ore.transform.position);
+        return Vector3.SqrMagnitude(miner.transform.position - targetPoint);
     }
 }
